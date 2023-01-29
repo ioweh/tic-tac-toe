@@ -1,5 +1,5 @@
 import React, { SyntheticEvent, useEffect, useState } from 'react';
-import Statistics from 'components/Statistics';
+import Statistics from '../Statistics';
 import './index.css';
 var TicTacToe = require('tictactoe-ai');
 
@@ -164,6 +164,7 @@ const Game = (): JSX.Element => {
                 let cell = document.createElement('td');
                 let checkbox = document.createElement('input');
                 checkbox.type = 'checkbox';
+                checkbox.className = 'tic-tac-toe-cell';
                 checkbox["data-x"] = x;
                 checkbox["data-y"] = y;
                 checkbox.indeterminate = true;
@@ -186,6 +187,7 @@ const Game = (): JSX.Element => {
 
     return (
     <>
+      <table id="grid"></table>
       <button onClick={startNewGame}>Restart</button>
       <Statistics
         humanVictoriesCount={humanVictoriesCount}
