@@ -5,7 +5,7 @@
     "scripts": {
         "start": "concurrently \"npm run server\" \"npm run webpack\"",
         "server": "node ./server/app.js",
-        "build": "webpack -p",
+        "build": "webpack --mode production",
         "webpack": "webpack -w",
         "test": "jest",
         "test:watch": "jest --watchAll"
