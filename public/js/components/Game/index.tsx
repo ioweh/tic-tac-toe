@@ -197,6 +197,8 @@ const Game = (): JSX.Element => {
         AIVictoriesCount={AIVictoriesCount}
       />
       {winnerMessage && <h1>{winnerMessage}</h1>}
+      <img className='x-img'/>
+      <img className='o-img'/>
     </>
     );
 }

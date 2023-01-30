@@ -3,6 +3,18 @@ body {
     font-family: sans-serif;
 }
 
+img {
+  visibility: hidden;
+}
+
+.x-img {
+  background-image: url("x.svg");
+}
+
+.o-img {
+  background-image: url("o.svg");
+}
+
 /* The animation code */
 @keyframes winning-cells {
   0%   { opacity:100%; }
