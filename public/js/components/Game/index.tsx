@@ -87,7 +87,7 @@ const Game = (): JSX.Element => {
         }
     }
 
-    const checkWinner = async (board: Board): Promise<void> => {
+    const checkWinner = (board: Board): void => {
         const winner = board.winner();
         if(winner) {
             preventClickingAllCells();
@@ -110,8 +110,10 @@ const Game = (): JSX.Element => {
     const AIMakeMove = async (AIPlayer: AIPlayer, AITeam: string, board: Board): Promise<Location|null> => {
         const timeToAwait: number = 300;
         await awaitSomeTime(timeToAwait);
+        // AI player just returns the coords
         var move = AIPlayer.makeMove();
         if(move != null){
+            // then the board uses those coords
             board.makeMove(AITeam, move);
         }
         return move;
@@ -126,7 +128,7 @@ const Game = (): JSX.Element => {
 
         // first the human moves
         board.makeMove('X', location);
-        await checkWinner(board);
+        checkWinner(board);
 
         // next make AI move
         let move = await AIMakeMove(AIPlayer, AITeam, board);

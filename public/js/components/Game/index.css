@@ -35,10 +35,9 @@ input[type="checkbox"] {
 }
 
 input[type="checkbox"]:checked {
-    background-image: url("tic-tac-toe.svg");
-    background-position: top 11px right 5px;
+    background-image: url("x.svg");
     background-repeat: no-repeat;
-    background-size: auto 240px;
+    background-size: 100%;
 }
 
 input[type="checkbox"]:indeterminate {
@@ -46,10 +45,9 @@ input[type="checkbox"]:indeterminate {
 }
 
 input[type="checkbox"]:not(indeterminate) {
-    background-image: url("tic-tac-toe.svg");
-    background-position: bottom -8px left 10px;
+    background-image: url("o.svg");
     background-repeat: no-repeat;
-    background-size: auto 230px;
+    background-size: 100%;
 }
 
 tr:first-child td {
@@ -78,4 +76,38 @@ button {
 .winning-cell {
     animation-name: winning-cells;
     animation-duration: 4s;
+}
+
+@media only screen and (hover: none) and (pointer: coarse) and (orientation:portrait) {
+  table {
+    border-spacing: 0;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  td {
+    border: 1px solid gray;
+    width: 33.33%;
+    position: relative;
+  }
+  
+  td:after {
+    content: '';
+    display: block;
+    margin-top: 100%;
+  }
+  
+  td .content {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  input[type="checkbox"] {
+    position: absolute;
+    width: 98%;
+    height: 98%;
+  }
 }
