@@ -79,6 +79,17 @@ button {
 }
 
 @media only screen and (hover: none) and (pointer: coarse) and (orientation:portrait) {
+  body {
+    font-size: 4vw;
+  }
+
+  button {
+    font-size: 4vw;
+    margin: 50px;
+    border-radius: 45px;
+    padding: 15px 45px;
+  }
+
   table {
     border-spacing: 0;
     border-collapse: collapse;
@@ -107,7 +118,7 @@ button {
 
   input[type="checkbox"] {
     position: absolute;
-    width: 98%;
-    height: 98%;
+    width: 97%;
+    height: 97%;
   }
 }

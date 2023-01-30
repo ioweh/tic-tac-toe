@@ -16,3 +16,17 @@
 .statistics-item-value {
   font-size: x-large;
 }
+
+@media only screen and (hover: none) and (pointer: coarse) and (orientation:portrait) {
+  .statistics {
+    width: 100%;
+  }
+
+  .statistics-item-title {
+    font-size: 4vw;
+  }
+  
+  .statistics-item-value {
+    font-size: 4vw;
+  }
+}
