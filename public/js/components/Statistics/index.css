@@ -31,3 +31,18 @@
     font-size: 4vw;
   }
 }
+
+@media only screen and (hover: none) and (pointer: coarse) and (orientation:landscape) {
+  .statistics {
+    width: 300px;
+  }
+
+  .statistics-item-title {
+    font-size: 2vw;
+  }
+  
+  .statistics-item-value {
+    font-size: 2vw;
+  }
+}
+
