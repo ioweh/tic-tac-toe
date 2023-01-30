@@ -1,7 +1,7 @@
 .statistics {
   display: flex;
   margin: auto;
-  width: 300px;
+  width: 600px;
 }
 
 .statistics-item {
@@ -11,6 +11,7 @@
 
 .statistics-item-title {
   margin-bottom: 10px;
+  font-size: x-large;
 }
 
 .statistics-item-value {

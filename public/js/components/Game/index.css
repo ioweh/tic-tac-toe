@@ -27,8 +27,8 @@ input[type="checkbox"] {
     -moz-appearance: none;
     appearance: none;
     display: block;
-    width: 80px;
-    height: 80px;
+    width: 180px;
+    height: 180px;
     transition-property: opacity;
     transition-duration: 1s;
     transition-timing-function: linear;
@@ -71,6 +71,7 @@ button {
     background: white;
     border-radius: 15px;
     padding: 5px 15px;
+    font-size: large;
 }
 
 .winning-cell {

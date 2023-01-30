@@ -108,7 +108,7 @@ const Game = (): JSX.Element => {
     }
 
     const AIMakeMove = async (AIPlayer: AIPlayer, AITeam: string, board: Board): Promise<Location|null> => {
-        const timeToAwait: number = 300;
+        const timeToAwait: number = 150;
         await awaitSomeTime(timeToAwait);
         // AI player just returns the coords
         var move = AIPlayer.makeMove();
