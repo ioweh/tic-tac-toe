@@ -4,12 +4,6 @@ import Cell from '../Cell';
 import './index.css';
 var TicTacToe = require('tictactoe-ai');
 
-const width: number = 3;
-const height: number = 3;
-
-// to represent the grid
-let checkboxes:HTMLInputElement[][] = [[]];
-
 interface Location {
     x: number;
     y: number;
@@ -23,16 +17,12 @@ interface Winner {
 interface Board {
     makeMove: (team: string, move: Location) => void;
     winner: () => Winner | null;
+    oppositePlayer: (s: string) => string;
 }
 
 interface AIPlayer {
     makeMove: () => Location | null;
-}
-
-interface GameState {
-    board: Board;
-    AITeam: string;
-    AIPlayer: AIPlayer;
+    initialize: (team: string, board: Board) => void;
 }
 
 const Game = (): JSX.Element => {
@@ -40,10 +30,12 @@ const Game = (): JSX.Element => {
     const [humanVictoriesCount, setHumanVictoriesCount] = useState<number>(0);
     const [AIVictoriesCount, setAIVictoriesCount] = useState<number>(0);
     const [tiesCount, setTiesCount] = useState<number>(0);
-    let board: Board, AITeam: string, AIPlayer: AIPlayer;
 
-    let cellRefArray: any = [];
+    const boardSize: number = 3;
     const cellCount = 9;
+
+    let board: Board, AITeam: string, AIPlayer: AIPlayer;
+    let cellRefArray: any = [];
 
     for(let i = 0; i < cellCount; i++) {
         const celRef = useRef(null);
@@ -59,21 +51,17 @@ const Game = (): JSX.Element => {
         });
     }
     
-    const initBoardAndAI = (): GameState => {
-        var board = new TicTacToe.TicTacToeBoard(['', '', '', '', '', '', '', '', '']);
-        var AITeam = board.oppositePlayer("X");
-        var AIPlayer = new TicTacToe.TicTacToeAIPlayer();
+    const initBoardAndAI = (): void  => {
+        board = new TicTacToe.TicTacToeBoard(['', '', '', '', '', '', '', '', '']);
+        AITeam = board.oppositePlayer("X");
+        AIPlayer = new TicTacToe.TicTacToeAIPlayer();
         AIPlayer.initialize(AITeam, board);
-        return { board, AITeam, AIPlayer };
     }
 
-    const startNewGame = (): void => {
-        const state = initBoardAndAI();
-        board = state.board;
-        AITeam = state.AITeam;
-        AIPlayer = state.AIPlayer;
+    const resetBoard = (): void => {
         resetCells();
         setWinnerMessage("");
+        initBoardAndAI();
     }
 
     const highlightWinningRow = (indexes: number[]): void => {
@@ -129,12 +117,6 @@ const Game = (): JSX.Element => {
     }
     
     const humanMakeMove = async (x, y) => {
-        if (!board) {
-            const state = initBoardAndAI();
-            board = state.board;
-            AITeam = state.AITeam;
-            AIPlayer = state.AIPlayer;
-        }
         let location: Location = { x, y };
 
         // first the human moves
@@ -146,15 +128,16 @@ const Game = (): JSX.Element => {
 
         // set the checkbox to the clicked state
         if (move) {
-            const position = move.y * width + move.x;
+            const position = move.y * boardSize + move.x;
             cellRefArray[position].current.AIToggle();
             checkWinner(board);
         }
     }
 
+    // we need the board initialized on rerender
     useEffect(() => {
-        startNewGame();
-    }, []);
+        initBoardAndAI();
+    });
 
     return (
     <>
@@ -220,7 +203,7 @@ const Game = (): JSX.Element => {
             </td>
         </tr>
       </table>
-      <button onClick={startNewGame}>Restart</button>
+      <button onClick={resetBoard}>Restart</button>
       <Statistics
         humanVictoriesCount={humanVictoriesCount}
         tiesCount={tiesCount}
