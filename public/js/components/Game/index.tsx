@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { RefObject, useEffect, useRef, useState } from 'react';
 import Statistics from '../Statistics';
-import Cell from '../Cell';
+import Cell, { CellHandle } from '../Cell';
 import './index.css';
 var TicTacToe = require('tictactoe-ai');
 
@@ -32,13 +32,13 @@ const Game = (): JSX.Element => {
     const [tiesCount, setTiesCount] = useState<number>(0);
 
     const boardSize: number = 3;
-    const cellCount = 9;
+    const cellCount: number = 9;
 
     let board: Board, AITeam: string, AIPlayer: AIPlayer;
-    let cellRefArray: any = [];
+    let cellRefArray: RefObject<CellHandle>[] = [];
 
     for(let i = 0; i < cellCount; i++) {
-        const celRef = useRef(null);
+        const celRef = useRef<CellHandle>(null);
         cellRefArray.push(celRef);
     }
 
@@ -66,19 +66,19 @@ const Game = (): JSX.Element => {
 
     const highlightWinningRow = (indexes: number[]): void => {
         indexes.forEach(index => {
-            cellRefArray[index].current.highlight();
+            cellRefArray[index].current?.highlight();
         });
     }
 
     const highlightAllCells = (): void => {
         cellRefArray.forEach(cell => {
-            cell.current.highlight();
+            cell.current?.highlight();
         });
     }
 
-    const resetCells = () => {
+    const resetCells = (): void => {
         cellRefArray.forEach(cell => {
-            cell.current.reset();
+            cell.current?.reset();
         });
     }
 
@@ -86,7 +86,7 @@ const Game = (): JSX.Element => {
         const winner = board.winner();
         if(winner) {
             cellRefArray.forEach(cell => {
-                cell.current.setCellToggled();
+                cell.current?.setCellToggled();
             });
             if(winner.cell === 'O') {
                 setWinnerMessage("AI won!");
@@ -116,7 +116,7 @@ const Game = (): JSX.Element => {
         return move;
     }
     
-    const humanMakeMove = async (x, y) => {
+    const humanMakeMove = async (x: number, y: number) => {
         let location: Location = { x, y };
 
         // first the human moves
@@ -129,7 +129,7 @@ const Game = (): JSX.Element => {
         // set the checkbox to the clicked state
         if (move) {
             const position = move.y * boardSize + move.x;
-            cellRefArray[position].current.AIToggle();
+            cellRefArray[position].current?.AIToggle();
             checkWinner(board);
         }
     }
