@@ -25,7 +25,8 @@ test('renders an empty board on game start', () => {
     const cells = container.getElementsByClassName('tic-tac-toe-cell');
 
     for (let i = 0; i < cells.length; i++) {
-        expect(cells[i]).not.toBeChecked();
+        expect(cells[i]).not.toHaveClass("x-cell");
+        expect(cells[i]).not.toHaveClass("o-cell");
     }
 });
 
