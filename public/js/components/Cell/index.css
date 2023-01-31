@@ -1,0 +1,52 @@
+/* The animation code */
+@keyframes winning-cells {
+  0%   { opacity:100%; }
+  25%  { opacity: 20%; }
+  50%  { opacity: 100%; }
+  75%  { opacity: 20%; }
+  100% { opacity: 100%; }
+}
+
+.x-cell {
+    background-image: url("x.svg");
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.o-cell {
+    background-image: url("o.svg");
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.tic-tac-toe-cell {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    display: block;
+    width: 180px;
+    height: 180px;
+    transition-property: opacity;
+    transition-duration: 1s;
+    transition-timing-function: linear;
+}
+
+.winning-cell {
+    animation-name: winning-cells;
+    animation-duration: 4s;
+}
+
+@media only screen and (hover: none) and (pointer: coarse) and (orientation:portrait) {
+  .tic-tac-toe-cell {
+    position: absolute;
+    width: 97%;
+    height: 97%;
+  }
+}
+
+@media only screen and (hover: none) and (pointer: coarse) and (orientation:landscape) {
+  .tic-tac-toe-cell {
+    width: 80px;
+    height: 80px;
+  }
+}

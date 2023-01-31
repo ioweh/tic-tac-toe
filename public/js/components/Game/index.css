@@ -15,15 +15,6 @@ img {
   background-image: url("o.svg");
 }
 
-/* The animation code */
-@keyframes winning-cells {
-  0%   { opacity:100%; }
-  25%  { opacity: 20%; }
-  50%  { opacity: 100%; }
-  75%  { opacity: 20%; }
-  100% { opacity: 100%; }
-}
-
 table {
     margin: auto;
     border-spacing: 0;
@@ -32,34 +23,6 @@ table {
 
 td {
     border: 1px solid gray;
-}
-
-input[type="checkbox"] {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    display: block;
-    width: 180px;
-    height: 180px;
-    transition-property: opacity;
-    transition-duration: 1s;
-    transition-timing-function: linear;
-}
-
-input[type="checkbox"]:checked {
-    background-image: url("x.svg");
-    background-repeat: no-repeat;
-    background-size: 100%;
-}
-
-input[type="checkbox"]:indeterminate {
-    background: white;
-}
-
-input[type="checkbox"]:not(indeterminate) {
-    background-image: url("o.svg");
-    background-repeat: no-repeat;
-    background-size: 100%;
 }
 
 tr:first-child td {
@@ -84,11 +47,6 @@ button {
     border-radius: 15px;
     padding: 5px 15px;
     font-size: large;
-}
-
-.winning-cell {
-    animation-name: winning-cells;
-    animation-duration: 4s;
 }
 
 @media only screen and (hover: none) and (pointer: coarse) and (orientation:portrait) {
@@ -127,18 +85,5 @@ button {
     bottom: 0;
     left: 0;
     right: 0;
-  }
-
-  input[type="checkbox"] {
-    position: absolute;
-    width: 97%;
-    height: 97%;
-  }
-}
-
-@media only screen and (hover: none) and (pointer: coarse) and (orientation:landscape) {
-  input[type="checkbox"] {
-    width: 80px;
-    height: 80px;
   }
 }

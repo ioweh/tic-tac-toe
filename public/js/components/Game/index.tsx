@@ -1,5 +1,6 @@
-import React, { SyntheticEvent, useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Statistics from '../Statistics';
+import Cell from '../Cell';
 import './index.css';
 var TicTacToe = require('tictactoe-ai');
 
@@ -39,6 +40,15 @@ const Game = (): JSX.Element => {
     const [humanVictoriesCount, setHumanVictoriesCount] = useState<number>(0);
     const [AIVictoriesCount, setAIVictoriesCount] = useState<number>(0);
     const [tiesCount, setTiesCount] = useState<number>(0);
+    let board: Board, AITeam: string, AIPlayer: AIPlayer;
+
+    let cellRefArray: any = [];
+    const cellCount = 9;
+
+    for(let i = 0; i < cellCount; i++) {
+        const celRef = useRef(null);
+        cellRefArray.push(celRef);
+    }
 
     // takes the number of milliseconds to await
     function awaitSomeTime(time: number): Promise<void> {
@@ -48,49 +58,48 @@ const Game = (): JSX.Element => {
             }, time);
         });
     }
+    
+    const initBoardAndAI = (): GameState => {
+        var board = new TicTacToe.TicTacToeBoard(['', '', '', '', '', '', '', '', '']);
+        var AITeam = board.oppositePlayer("X");
+        var AIPlayer = new TicTacToe.TicTacToeAIPlayer();
+        AIPlayer.initialize(AITeam, board);
+        return { board, AITeam, AIPlayer };
+    }
 
     const startNewGame = (): void => {
         const state = initBoardAndAI();
-        const { board, AITeam, AIPlayer } = state;
-        renderBoard(board, AIPlayer, AITeam);
+        board = state.board;
+        AITeam = state.AITeam;
+        AIPlayer = state.AIPlayer;
+        resetCells();
         setWinnerMessage("");
     }
 
     const highlightWinningRow = (indexes: number[]): void => {
         indexes.forEach(index => {
-            const x = Math.floor(index / width);
-            const y = index % height;
-            checkboxes[x][y].className = "winning-cell";
+            cellRefArray[index].current.highlight();
         });
     }
 
     const highlightAllCells = (): void => {
-        for(let y = 0; y < height; y++) {
-            for(let x = 0; x < width; x++) {
-                checkboxes[x][y].className = "winning-cell";
-            }
-        }
+        cellRefArray.forEach(cell => {
+            cell.current.highlight();
+        });
     }
 
-    // in case we already clicked a cell
-    const preventClicking = (event: MouseEvent): void => {
-        event.preventDefault();
-        event.stopPropagation();
-    }
-
-    // in the case of a winning
-    const preventClickingAllCells = (): void => {
-        for (let y = 0; y < height; y++) {
-            for(let x = 0; x < width; x++) {
-                checkboxes[y][x].onclick = preventClicking;
-            }
-        }
+    const resetCells = () => {
+        cellRefArray.forEach(cell => {
+            cell.current.reset();
+        });
     }
 
     const checkWinner = (board: Board): void => {
         const winner = board.winner();
         if(winner) {
-            preventClickingAllCells();
+            cellRefArray.forEach(cell => {
+                cell.current.setCellToggled();
+            });
             if(winner.cell === 'O') {
                 setWinnerMessage("AI won!");
                 setAIVictoriesCount(AIVictoriesCount + 1);
@@ -107,7 +116,7 @@ const Game = (): JSX.Element => {
         }
     }
 
-    const AIMakeMove = async (AIPlayer: AIPlayer, AITeam: string, board: Board): Promise<Location|null> => {
+    const AIMakeMove = async (): Promise<Location|null> => {
         const timeToAwait: number = 150;
         await awaitSomeTime(timeToAwait);
         // AI player just returns the coords
@@ -119,68 +128,28 @@ const Game = (): JSX.Element => {
         return move;
     }
     
-    const humanMakeMove = async (checkbox: HTMLInputElement, board: Board, AIPlayer: AIPlayer, AITeam: string) => {
-        checkbox.onclick = preventClicking;
-        let location: Location = {
-            x: checkbox["data-x"],
-            y: checkbox["data-y"],
-        };
+    const humanMakeMove = async (x, y) => {
+        if (!board) {
+            const state = initBoardAndAI();
+            board = state.board;
+            AITeam = state.AITeam;
+            AIPlayer = state.AIPlayer;
+        }
+        let location: Location = { x, y };
 
         // first the human moves
         board.makeMove('X', location);
         checkWinner(board);
 
         // next make AI move
-        let move = await AIMakeMove(AIPlayer, AITeam, board);
+        let move = await AIMakeMove();
 
         // set the checkbox to the clicked state
         if (move) {
-            let AISelectedCheckbox = checkboxes[move.y][move.x];
-            AISelectedCheckbox.checked = false;
-            AISelectedCheckbox.indeterminate = false;
-            AISelectedCheckbox.onclick = preventClicking;
+            const position = move.y * width + move.x;
+            cellRefArray[position].current.AIToggle();
             checkWinner(board);
-        } else {
-            throw new Error('AI cannot make a move!');
         }
-    }
-    
-    const initBoardAndAI = (): GameState => {
-        var board = new TicTacToe.TicTacToeBoard(['', '', '', '', '', '', '', '', '']);
-        var AITeam = board.oppositePlayer("X");
-        var AIPlayer = new TicTacToe.TicTacToeAIPlayer();
-        AIPlayer.initialize(AITeam, board);
-        return { board, AITeam, AIPlayer };
-    }
-    
-    const renderBoard = (board: Board, AIPlayer: AIPlayer, AITeam: string): void => {
-        let grid = document.getElementById('grid');
-        grid!.innerHTML = '';
-        let fragment = document.createDocumentFragment();
-        
-        for (let y = 0; y < height; y++) {
-            let row = document.createElement('tr');
-            checkboxes[y] = [];
-            
-            for(let x = 0; x < width; x++) {
-                let cell = document.createElement('td');
-                let checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.className = 'tic-tac-toe-cell';
-                checkbox["data-x"] = x;
-                checkbox["data-y"] = y;
-                checkbox.indeterminate = true;
-                checkbox.onclick = () => humanMakeMove(checkbox, board, AIPlayer, AITeam);
-                checkboxes[y][x] = checkbox;
-                
-                cell.appendChild(checkbox);
-                row.appendChild(cell);
-            }
-            
-            fragment.appendChild(row);
-        }
-
-        grid!.appendChild(fragment);
     }
 
     useEffect(() => {
@@ -189,7 +158,68 @@ const Game = (): JSX.Element => {
 
     return (
     <>
-      <table id="grid"></table>
+      <table id="grid">
+        <tr>
+            <td>
+                <Cell x={0}
+                  y={0}
+                  ref={cellRefArray[0]}
+                  humanToggle={humanMakeMove} />
+            </td>
+            <td>
+                <Cell x={1}
+                  y={0}
+                  ref={cellRefArray[1]}
+                  humanToggle={humanMakeMove} />
+            </td>
+            <td>
+                <Cell x={2}
+                  y={0}
+                  ref={cellRefArray[2]}
+                  humanToggle={humanMakeMove} />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <Cell x={0}
+                  y={1}
+                  ref={cellRefArray[3]}
+                  humanToggle={humanMakeMove} />
+            </td>
+            <td>
+                <Cell x={1}
+                  y={1}
+                  ref={cellRefArray[4]}
+                  humanToggle={humanMakeMove} />
+            </td>
+            <td>
+                <Cell x={2}
+                  y={1}
+                  ref={cellRefArray[5]}
+                  humanToggle={humanMakeMove} />
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <Cell x={0}
+                  y={2}
+                  ref={cellRefArray[6]}
+                  humanToggle={humanMakeMove} />
+            </td>
+            <td>
+                <Cell x={1}
+                  y={2}
+                  ref={cellRefArray[7]}
+                  humanToggle={humanMakeMove} />
+            </td>
+            <td>
+                <Cell x={2}
+                  y={2}
+                  ref={cellRefArray[8]}
+                  humanToggle={humanMakeMove} />
+            </td>
+        </tr>
+      </table>
       <button onClick={startNewGame}>Restart</button>
       <Statistics
         humanVictoriesCount={humanVictoriesCount}
