@@ -126,7 +126,7 @@ const Game = (): JSX.Element => {
         // next make AI move
         let move = await AIMakeMove();
 
-        // set the checkbox to the clicked state
+        // set the cell to the clicked state
         if (move) {
             const position = move.y * boardSize + move.x;
             cellRefArray[position].current?.AIToggle();

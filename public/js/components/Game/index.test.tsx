@@ -14,41 +14,41 @@ test('renders restart button', () => {
 test('renders nine tic-tac-toe cells', () => {
     const {container} = render(<Game />);
 
-    const checkboxes = container.getElementsByClassName('tic-tac-toe-cell');
+    const cells = container.getElementsByClassName('tic-tac-toe-cell');
 
-    expect(checkboxes).toHaveLength(9);
+    expect(cells).toHaveLength(9);
 });
 
 test('renders an empty board on game start', () => {
     const {container} = render(<Game />);
 
-    const checkboxes = container.getElementsByClassName('tic-tac-toe-cell');
+    const cells = container.getElementsByClassName('tic-tac-toe-cell');
 
-    for (let i = 0; i < checkboxes.length; i++) {
-        expect(checkboxes[i]).not.toBeChecked();
+    for (let i = 0; i < cells.length; i++) {
+        expect(cells[i]).not.toBeChecked();
     }
 });
 
 test('makes possible for the user to make a move', () => {
     const {container} = render(<Game />);
 
-    const checkboxes = container.getElementsByClassName('tic-tac-toe-cell');
-    const firstCheckbox = checkboxes[0];
-    fireEvent.click(firstCheckbox);
+    const cells = container.getElementsByClassName('tic-tac-toe-cell');
+    const firstCell = cells[0];
+    fireEvent.click(firstCell);
 
-    expect(firstCheckbox).toBeChecked();
+    expect(firstCell).toHaveClass("x-cell");
 });
 
 test('renders an empty board on restarting the game', () => {
     const {container} = render(<Game />);
 
-    const checkboxes = container.getElementsByClassName('tic-tac-toe-cell');
-    const firstCheckbox = checkboxes[0];
-    fireEvent.click(firstCheckbox);
+    const cells = container.getElementsByClassName('tic-tac-toe-cell');
+    const firstCell = cells[0];
+    fireEvent.click(firstCell);
     const restartButton = screen.getByText(/restart/i);
     fireEvent.click(restartButton);
 
-    for (let i = 0; i < checkboxes.length; i++) {
-        expect(checkboxes[i]).toBePartiallyChecked();
+    for (let i = 0; i < cells.length; i++) {
+        expect(cells[i]).not.toHaveClass("x-cell");
     }
 });
