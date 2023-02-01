@@ -142,6 +142,7 @@ const Game = (): JSX.Element => {
     return (
     <>
       <table id="grid">
+       <tbody>
         <tr>
             <td>
                 <Cell x={0}
@@ -202,6 +203,7 @@ const Game = (): JSX.Element => {
                   humanToggle={humanMakeMove} />
             </td>
         </tr>
+       </tbody>
       </table>
       <button onClick={resetBoard}>Restart</button>
       <Statistics
